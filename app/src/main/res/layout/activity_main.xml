@@ -6,10 +6,45 @@
     android:orientation="vertical"
     tools:context="com.xds.p.MainActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/et_add"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_weight="1"
+            android:text="添加" />
+    </LinearLayout>
+
+
     <Button
-        android:id="@+id/btn_init"
+        android:id="@+id/btn_query"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="初始化" />
+        android:textSize="16sp"
+        android:text="查询" />
 
+
+    <TextView
+        android:id="@+id/tv_TheFirstTwoNumbers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp" />
+
+    <ListView
+        android:id="@+id/lv_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></ListView>
 </LinearLayout>
