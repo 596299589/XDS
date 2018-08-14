@@ -1,8 +1,10 @@
 package com.xds.p;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -10,7 +12,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -20,14 +22,20 @@ import android.widget.Toast;
 import com.xds.p.bean.XdsBean;
 import com.xds.p.db.DbHelper;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
     private static final String TAG = "MainActivity";
 
-    private Button mBtnAdd, mBtnQuery;
+    private Button mBtnAdd;
     private EditText mEtAdd;
     private ListView mLvDisplay;
     private TextView tv_TheFirstTwoNumbers;
@@ -40,32 +48,33 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getPermissions();
         setContentView(R.layout.activity_main);
 
         mBtnAdd = findViewById(R.id.btn_add);
-        mBtnQuery = findViewById(R.id.btn_query);
 
         mBtnAdd.setOnClickListener(this);
-        mBtnQuery.setOnClickListener(this);
 
         tv_TheFirstTwoNumbers = findViewById(R.id.tv_TheFirstTwoNumbers);
-        tv_TheFirstTwoNumbers.setVisibility(View.GONE);
+        tv_TheFirstTwoNumbers.setVisibility(View.INVISIBLE);
 
         mEtAdd = findViewById(R.id.et_add);
         mLvDisplay = findViewById(R.id.lv_display);
+        mLvDisplay.setOnItemLongClickListener(onItemLongClickListener);
 
         mXdsAdapter = new XdsAdapter(this);
 
         mDbHelper = new DbHelper(MainActivity.this);
-        createHt();
+        createHandlerThread();
         createHandlerCallBack();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mEtAdd.getWindowToken(), 0);
+    protected void onStart() {
+        super.onStart();
+        mXdsAdapter.update(mAllListParse);
+        mLvDisplay.setAdapter(mXdsAdapter);
+        mHandler.sendEmptyMessageDelayed(0, 200);
     }
 
     private int weiHaoTiaoJian;
@@ -77,12 +86,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.btn_add:
                 add();
                 break;
-
-            case R.id.btn_query:
-                mHandler.sendEmptyMessage(0);
-                break;
         }
     }
+
+    private AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            Log.d(TAG, "onItemLongClick position = " + position);
+            ArrayList<XdsBean> list = mAllListParse.get(position);
+            DeleteDialog confirmDialog = new DeleteDialog(MainActivity.this, list);
+            confirmDialog.setClicklistener(new DeleteDialog.ClickListenerInterface() {
+                @Override
+                public void onSelect(XdsBean xdsBean) {
+
+                }
+            });
+            confirmDialog.show();
+            return false;
+        }
+    };
+
+
 
     private ArrayList<XdsBean> mAllList;
     private ArrayList<ArrayList<XdsBean>> mAllListParse = new ArrayList<>();
@@ -90,6 +114,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private void add() {
         if (null != mDbHelper) {
             String numS = mEtAdd.getText().toString();
+            copyDb(numS);
+            mEtAdd.setText("");
             if (weiHaoTiaoJian != 0) {
                 weiHaoTiaoJian--;
             }
@@ -101,9 +127,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             if (weiHaoTiaoJian == 0 || weiHaoTiaoJianSB.toString().contains(numS1)) {
                 weiHaoTiaoJian = 0;
-                tv_TheFirstTwoNumbers.setVisibility(View.GONE);
+                tv_TheFirstTwoNumbers.setVisibility(View.INVISIBLE);
             }
-            mEtAdd.setText("");
+
             if (TextUtils.isEmpty(numS)) {
                 Toast.makeText(MainActivity.this, "您没有输入数字", Toast.LENGTH_SHORT).show();
                 return;
@@ -122,11 +148,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
             XdsBean xdsBean = mDbHelper.queryLastData();
 
             if (null != mAllList) {
+                if (mAllList.size() == 30) {
+                    mAllList.remove(0);
+                }
                 mAllList.add(xdsBean);
                 mHandler.sendEmptyMessage(1);
-            }
-            for (XdsBean b : mAllList) {
-                Log.d(TAG, "###############" + b.toString());
             }
 
             if (xdsBean != null) {
@@ -159,10 +185,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void queryAll() {
         if (null != mDbHelper) {
-            mAllList = mDbHelper.query();
-            for (XdsBean b : mAllList) {
-                Log.d(TAG, "************" + b.toString());
-            }
+            mAllList = mDbHelper.query(30);
+            Collections.reverse(mAllList);
             parseAllList();
         }
     }
@@ -175,15 +199,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
             int count = mAllList.size();
             mAllListParse.clear();
 
-            int zushu = count / 5;
-            int yushu = count % 5;
+            int zushu = count / 6;
+            int yushu = count % 6;
             if (yushu > 0) {
                 zushu++;
             }
 
             for (int i = 0; i < zushu; i++) {
-                int startIndex = i * 5;
-                int endIndex = startIndex + 5;
+                int startIndex = i * 6;
+                int endIndex = startIndex + 6;
                 Log.d(TAG, "startIndex:" + startIndex + " endIndex:" + endIndex + " count:" + count);
                 if (endIndex > count) {
                     endIndex = startIndex + yushu;
@@ -191,7 +215,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 List<XdsBean> l = mAllList.subList(startIndex, endIndex);
                 ArrayList<XdsBean> l2 = new ArrayList<>();
                 for (int j = 0; j < l.size(); j++) {
-                    Log.d(TAG, j + "###" + l.get(j));
+//                    Log.d(TAG, j + "###" + l.get(j));
                     l2.add(l.get(j));
                 }
                 mAllListParse.add(l2);
@@ -201,14 +225,56 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void displayAllList() {
+        Log.d(TAG, "displayAllList");
         mXdsAdapter.update(mAllListParse);
-        mLvDisplay.setAdapter(mXdsAdapter);
     }
 
-    /**
-     * 创建HandlerThread
-     */
-    private void createHt() {
+    private void getPermissions() {
+        //动态获取权限，Android 6.0 新特性，一些保护权限，除了要在AndroidManifest中声明权限，还要使用如下代码动态获取
+        if (Build.VERSION.SDK_INT >= 23) {
+            int REQUEST_CODE_CONTACT = 101;
+            String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            //验证是否许可权限
+            for (String str : permissions) {
+                if (this.checkSelfPermission(str) != PackageManager.PERMISSION_GRANTED) {
+                    //申请权限
+                    this.requestPermissions(permissions, REQUEST_CODE_CONTACT);
+                    return;
+                }
+            }
+        }
+    }
+
+    private void copyDb(String s) {
+        if ("5656".equals(s)) {
+            File db = new File("/data/data/com.xds.p/databases/xdsdata.db");
+            if (db.exists()) {
+                try {
+                    File toFile = new File("/sdcard/xdsdata.db");
+                    if (toFile.exists()) {
+                        toFile.delete();
+                    } else {
+                        toFile.createNewFile();
+                    }
+                    InputStream fosfrom = new FileInputStream(db);
+                    OutputStream fosto = new FileOutputStream(toFile);
+                    byte bt[] = new byte[1024];
+                    int c;
+                    while ((c = fosfrom.read(bt)) > 0) {
+                        fosto.write(bt, 0, c);
+                    }
+                    fosfrom.close();
+                    fosto.close();
+                    Log.d(TAG, "拷贝成功");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void createHandlerThread() {
         HandlerThread ht = new HandlerThread("xds_thread");
         ht.start();
         mHandler = new Handler(ht.getLooper()) {
@@ -228,7 +294,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void createHandlerCallBack() {
-        mHandlerCallBack = new Handler() {
+        mHandlerCallBack = new Handler(MainActivity.this.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);

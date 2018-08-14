@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- text size -->
+    <dimen name="text_size">16sp</dimen>
+
     <dimen name="shape">30dp</dimen>
 
 </resources>

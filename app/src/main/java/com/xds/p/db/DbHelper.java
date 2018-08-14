@@ -318,30 +318,27 @@ public class DbHelper extends SQLiteOpenHelper {
         db.beginTransaction();
         try {
             ArrayList<XdsBean> list = new ArrayList<>();
-            for (int i = 0; i < 2; i++) {
-                firstId--;
-                Cursor cursor1 = db.rawQuery("select * from " + DB_TABLE_XDSDATA + " where _id=" + firstId + ";", null);
-                for (cursor1.moveToFirst(); !cursor1.isAfterLast(); cursor1.moveToNext()) {
-                    int numColumn = cursor1.getColumnIndex(XdsDb.NUM);
-                    int idColumn = cursor1.getColumnIndex(XdsDb._ID);
-                    int timeColumn = cursor1.getColumnIndex(XdsDb.TIME);
+            Cursor cursor1 = db.rawQuery("select * from " + DB_TABLE_XDSDATA + " where _id<" + firstId + " and _id>=" + (firstId-2) + ";", null);
+            for (cursor1.moveToFirst(); !cursor1.isAfterLast(); cursor1.moveToNext()) {
+                int numColumn = cursor1.getColumnIndex(XdsDb.NUM);
+                int idColumn = cursor1.getColumnIndex(XdsDb._ID);
+                int timeColumn = cursor1.getColumnIndex(XdsDb.TIME);
 
-                    int id = cursor1.getInt(idColumn);
-                    int num = cursor1.getInt(numColumn);
-                    int time = cursor1.getInt(timeColumn);
+                int id = cursor1.getInt(idColumn);
+                int num = cursor1.getInt(numColumn);
+                int time = cursor1.getInt(timeColumn);
 
-                    String numS = String.valueOf(num);
-                    if (num > 0 && num < 10) {
-                        numS = 0 + numS;
-                    }
-
-                    String[] shuXingList = getShuXing(String.valueOf(numS));
-
-                    String yangSe = shuXingList[0];
-                    String shengXiao = shuXingList[1];
-                    Log.d(TAG, "id:" + firstId + "  num:" + numS + "  yangSe:" + yangSe + "  shengXiao:" + shengXiao);
-                    list.add(new XdsBean(id, numS, time, yangSe, shengXiao));
+                String numS = String.valueOf(num);
+                if (num > 0 && num < 10) {
+                    numS = 0 + numS;
                 }
+
+                String[] shuXingList = getShuXing(String.valueOf(numS));
+
+                String yangSe = shuXingList[0];
+                String shengXiao = shuXingList[1];
+                Log.d(TAG, "id:" + firstId + "  num:" + numS + "  yangSe:" + yangSe + "  shengXiao:" + shengXiao);
+                list.add(new XdsBean(id, numS, time, yangSe, shengXiao));
             }
             db.setTransactionSuccessful();
             return list;
@@ -352,14 +349,15 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     /**
-     * 查询所有数据
+     * 查询最后count个数据
+     * @param count
      **/
-    public ArrayList<XdsBean> query() {
+    public ArrayList<XdsBean> query(int count) {
         SQLiteDatabase db;
         db = getWritableDatabase();
         db.beginTransaction();
         try {
-            Cursor cursor = db.rawQuery("SELECT * FROM " + DB_TABLE_XDSDATA + ";", null);
+            Cursor cursor = db.rawQuery("SELECT * FROM " + DB_TABLE_XDSDATA + " order by _id desc limit 0," + count + ";", null);
             ArrayList<XdsBean> list = new ArrayList<>();
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 int numColumn = cursor.getColumnIndex(XdsDb.NUM);
@@ -369,12 +367,11 @@ public class DbHelper extends SQLiteOpenHelper {
                 int id = cursor.getInt(idColumn);
                 int num = cursor.getInt(numColumn);
                 int time = cursor.getInt(timeColumn);
-                Log.d(TAG, "id = " + id + "  num = " + num + "  time = " + time);
+//                Log.d(TAG, "id = " + id + "  num = " + num + "  time = " + time);
                 String numS = String.valueOf(num);
                 if (num > 0 && num < 10) {
                     numS = 0 + numS;
                 }
-
 
                 String[] shuXingList = getShuXing(numS);
                 String yangSe = shuXingList[0];

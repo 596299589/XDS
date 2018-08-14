@@ -28,7 +28,7 @@ public class XdsAdapter extends BaseAdapter {
     private ArrayList<ArrayList<XdsBean>> mList;
 
     public void update(ArrayList<ArrayList<XdsBean>> list) {
-        mList = list;
+        mList = (ArrayList<ArrayList<XdsBean>>) list.clone();
         this.notifyDataSetChanged();
     }
 
@@ -58,31 +58,42 @@ public class XdsAdapter extends BaseAdapter {
             vh.item3 = view.findViewById(R.id.tv_item3);
             vh.item4 = view.findViewById(R.id.tv_item4);
             vh.item5 = view.findViewById(R.id.tv_item5);
+            vh.item6 = view.findViewById(R.id.tv_item6);
             view.setTag(vh);
         } else {
             vh = (ViewHolder) view.getTag();
         }
 
-        setBackgroundColor(vh.item1, null, "");
-        setBackgroundColor(vh.item2, null, "");
-        setBackgroundColor(vh.item3, null, "");
-        setBackgroundColor(vh.item4, null, "");
-        setBackgroundColor(vh.item5, null, "");
-
+        if (i == (mList.size() - 1)) {
+            setBackgroundColor(vh.item1, null, "");
+            setBackgroundColor(vh.item2, null, "");
+            setBackgroundColor(vh.item3, null, "");
+            setBackgroundColor(vh.item4, null, "");
+            setBackgroundColor(vh.item5, null, "");
+            setBackgroundColor(vh.item6, null, "");
+        }
 
         ArrayList<XdsBean> list = mList.get(i);
-        for (int j = 0; j < list.size(); j++){
-            int yu = j % 5;
-            if (yu == 0) {
-                setBackgroundColor(vh.item1, list.get(j).getYangSe(), list.get(j).getNum());
-            } else if (yu == 1) {
-                setBackgroundColor(vh.item2, list.get(j).getYangSe(), list.get(j).getNum());
-            } else if (yu == 2) {
-                setBackgroundColor(vh.item3, list.get(j).getYangSe(), list.get(j).getNum());
-            } else if (yu == 3) {
-                setBackgroundColor(vh.item4, list.get(j).getYangSe(), list.get(j).getNum());
-            } else if (yu == 4) {
-                setBackgroundColor(vh.item5, list.get(j).getYangSe(), list.get(j).getNum());
+        for (int j = 0; j < list.size(); j++) {
+            switch (j) {
+                case 0:
+                    setBackgroundColor(vh.item1, list.get(j).getYangSe(), list.get(j).getNum());
+                    break;
+                case 1:
+                    setBackgroundColor(vh.item2, list.get(j).getYangSe(), list.get(j).getNum());
+                    break;
+                case 2:
+                    setBackgroundColor(vh.item3, list.get(j).getYangSe(), list.get(j).getNum());
+                    break;
+                case 3:
+                    setBackgroundColor(vh.item4, list.get(j).getYangSe(), list.get(j).getNum());
+                    break;
+                case 4:
+                    setBackgroundColor(vh.item5, list.get(j).getYangSe(), list.get(j).getNum());
+                    break;
+                case 5:
+                    setBackgroundColor(vh.item6, list.get(j).getYangSe(), list.get(j).getNum());
+                    break;
             }
         }
         return view;
@@ -94,6 +105,7 @@ public class XdsAdapter extends BaseAdapter {
         private TextView item3;
         private TextView item4;
         private TextView item5;
+        private TextView item6;
     }
 
     private void setBackgroundColor(TextView v, String yanSe, String num) {

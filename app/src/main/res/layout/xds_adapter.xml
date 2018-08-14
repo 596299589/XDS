@@ -4,62 +4,73 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="horizontal"
+    android:paddingBottom="2dp"
     android:paddingLeft="5dp"
-    android:paddingTop="2dp"
-    android:paddingBottom="2dp">
+    android:paddingTop="2dp">
 
     <TextView
         android:id="@+id/tv_item1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textStyle="bold"
         android:gravity="center"
         android:textColor="@android:color/white"
-        android:textSize="16sp" />
+        android:textSize="@dimen/text_size"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_item2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textStyle="bold"
         android:layout_marginLeft="10dp"
         android:gravity="center"
         android:textColor="@android:color/white"
-        android:textSize="16sp" />
+        android:textSize="@dimen/text_size"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_item3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textStyle="bold"
         android:layout_marginLeft="10dp"
         android:gravity="center"
         android:textColor="@android:color/white"
-        android:textSize="16sp" />
+        android:textSize="@dimen/text_size"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_item4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textStyle="bold"
         android:layout_marginLeft="10dp"
         android:gravity="center"
         android:textColor="@android:color/white"
-        android:textSize="16sp" />
+        android:textSize="@dimen/text_size"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_item5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textStyle="bold"
         android:layout_marginLeft="10dp"
         android:gravity="center"
         android:textColor="@android:color/white"
-        android:textSize="16sp" />
+        android:textSize="@dimen/text_size"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_item6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size"
+        android:textStyle="bold" />
 
 </LinearLayout>

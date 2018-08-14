@@ -16,32 +16,32 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_size"
             android:inputType="number" />
 
         <Button
             android:id="@+id/btn_add"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_size"
             android:layout_weight="1"
             android:text="添加" />
     </LinearLayout>
 
 
-    <Button
+<!--    <Button
         android:id="@+id/btn_query"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:text="查询" />
+        android:text="查询" />-->
 
 
     <TextView
         android:id="@+id/tv_TheFirstTwoNumbers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
+        android:textSize="@dimen/text_size" />
 
     <ListView
         android:id="@+id/lv_display"
