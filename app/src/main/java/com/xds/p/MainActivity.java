@@ -98,7 +98,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
             confirmDialog.setClicklistener(new DeleteDialog.ClickListenerInterface() {
                 @Override
                 public void onSelect(XdsBean xdsBean) {
-
+                    Log.d(TAG, "onSelect:" + xdsBean.toString());
+                    if (null != mDbHelper){
+                        mDbHelper.deleteDatas("_id=?", new String[]{String.valueOf(xdsBean.get_id())});
+                    }
                 }
             });
             confirmDialog.show();

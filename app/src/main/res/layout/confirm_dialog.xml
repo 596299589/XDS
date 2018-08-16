@@ -10,12 +10,56 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:paddingTop="14dp"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/text_size"
-        android:text="请选择你要删除的数据" />
+        android:text="请选择你要删除的数据"
+        android:textSize="@dimen/text_size" />
 
 
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
+        <RadioButton
+            android:id="@+id/radioButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="RadioButton" />
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="RadioButton" />
+
+        <RadioButton
+            android:id="@+id/radioButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="RadioButton" />
+
+        <RadioButton
+            android:id="@+id/radioButton4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="RadioButton" />
+
+        <RadioButton
+            android:id="@+id/radioButton5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="RadioButton" />
+
+        <RadioButton
+            android:id="@+id/radioButton6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="RadioButton" />
+    </RadioGroup>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,7 +77,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="确定"
-            android:textColor="@android:color/white" />
+            android:textSize="@dimen/text_size" />
 
         <TextView
             android:id="@+id/cancel"
@@ -43,7 +87,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="取消"
-            android:textColor="@android:color/white" />
+            android:textSize="@dimen/text_size" />
     </LinearLayout>
 
 </LinearLayout>

@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="DialogTheme" parent="@android:style/Theme.Holo.Dialog.NoActionBar">
+    <style name="DialogTheme" parent="@android:style/Theme.Holo.Light.Dialog.NoActionBar">
         <!-- Customize your theme here. -->
     </style>
 
